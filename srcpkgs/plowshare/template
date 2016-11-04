@@ -1,0 +1,12 @@
+# Template file for 'plowshare'
+pkgname=plowshare
+version=2.1.7
+revision=1
+build_style=gnu-makefile
+depends="git curl js recode"
+short_desc="A set of command-line tools designed for managing file-sharing websites"
+maintainer="RunningDroid <runningdroid@zoho.com>"
+license="GPL-3"
+homepage="https://github.com/mcrapet/plowshare"
+distfiles="https://github.com/mcrapet/plowshare/archive/v${version}.tar.gz"
+checksum=c17d0cc1b3323f72b2c1a5b183a9fcef04e8bfc53c9679a4e1523642310d22ad
