@@ -1,0 +1,13 @@
+# Template file for 'odroid-c1-base'
+pkgname=odroid-c1-base
+version=20161228
+revision=1
+build_style=meta
+homepage="http://www.voidlinux.eu"
+short_desc="Void Linux Odroid C1 platform package"
+maintainer="RunningDroid <runningdroid@zoho.com>"
+license="Public Domain"
+
+only_for_archs="armv7l armv7l-musl"
+makedepends="base-system"
+depends="virtual?ntp-daemon odroid-c1-kernel odroid-c1-uboot linux-firmware-network"
