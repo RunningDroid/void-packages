@@ -1,0 +1,34 @@
+--- sd_fuse/sd_fusing.sh.orig	2016-12-30 00:09:18.552569709 -0500
++++ sd_fuse/sd_fusing.sh	2016-12-30 00:20:01.707172658 -0500
+@@ -8,22 +8,21 @@
+ 
+ if [ -z $1 ]; then
+         echo "usage ./sd_fusing.sh <SD card reader's device file>"
+-        exit 0
++        exit 1
+ fi
+ 
+ if [ ! -f $BL1 ]; then
+-        echo "Error: $BL1 is not exist."
+-        exit 0
++        echo "Error: $BL1 does not exist."
++        exit 1
+ fi
+ 
+ if [ ! -f $UBOOT ]; then
+-        echo "Error: $UBOOT is not exist."
+-        exit 0
++        echo "Error: $UBOOT does not exist."
++        exit 1
+ fi
+ 
+-sudo dd if=$BL1 of=$1 bs=1 count=442
+-sudo dd if=$BL1 of=$1 bs=512 skip=1 seek=1
+-sudo dd if=$UBOOT of=$1 bs=512 seek=64
++dd if=$BL1 of=$1 bs=1 count=442
++dd if=$BL1 of=$1 bs=512 skip=1 seek=1
++dd if=$UBOOT of=$1 bs=512 seek=64
+ sync
+-sudo eject $1
+-echo FINISH
++echo "Successfully wrote U-Boot to $1"
