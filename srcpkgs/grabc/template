@@ -1,16 +1,17 @@
 # Template file for 'grabc'
 pkgname=grabc
-version=1.1
+reverts="1.1_1"
+version=1.0.2
 revision=1
-wrksrc="${pkgname}${version}"
+wrksrc="${pkgname}-c5de176b9a820ff30e0d73711700ef9023f2e02c"
 build_style=gnu-makefile
-makedepends="libX11-devel"
+makedepends="libX11-devel unzip"
 short_desc="Identify color of a pixel on the screen"
 maintainer="Duncaen <duncaen@voidlinux.org>"
 license="GPL-2"
 homepage="http://www.muquit.com/muquit/software/grabc/grabc.html"
-distfiles="http://www.muquit.com/muquit/software/grabc/grabc${version}.tar.gz"
-checksum=f0492a8ea33b46a16bdb94644420f54724e31c4436e4cd77937a30b2de3bb00e
+distfiles="https://github.com/muquit/grabc/archive/c5de176b9a820ff30e0d73711700ef9023f2e02c.zip"
+checksum=bd1ecc9fcf91c664637dff75bd1119c93d2ffa4e2440cce90c94fbeccb57362a
 
 pre_build() {
 	sed -i -e 's|$(LIBS)|$(LDFLAGS) -lX11|' Makefile
