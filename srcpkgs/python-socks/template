@@ -1,0 +1,23 @@
+# Template file for 'python-socks'
+pkgname=python-socks
+version=1.7.0
+revision=1
+wrksrc="PySocks-${version}"
+build_style=python-module
+hostmakedepends="python-setuptools python3-setuptools"
+depends="python"
+short_desc="SOCKS4, SOCKS5 or HTTP proxy client library (Python2)"
+maintainer="RunningDroid <runningdroid@zoho.com>"
+license="BSD"
+homepage="https://github.com/Anorov/PySocks"
+distfiles="https://github.com/Anorov/PySocks/archive/${version}.tar.gz"
+checksum=b6dbd9daf8ebe75c9f76b54c9747d3d1f1d5ac54d540e44b7eb93936ae38b01a
+
+python3-socks_package() {
+	short_desc="${short_desc/Python2/Python3}"
+	noarch=yes
+	depends="python3"
+	pkg_install() {
+		vmove usr/lib/python3*
+	}
+}

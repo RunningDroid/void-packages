@@ -1,0 +1,3 @@
+site="${homepage}/releases"
+pattern='<span class="(tag-name|css-truncate-target)" style="[^"]+">\K.+(?=</span>)'
+version=${version}
