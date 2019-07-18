@@ -1,0 +1,3 @@
+site="https://github.com/hydrusnetwork/hydrus/releases"
+pattern='<span class="(tag-name|css-truncate-target)" style="[^"]+">v\K.+(?=</span>)'
+

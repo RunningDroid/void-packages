@@ -1,0 +1,59 @@
+# Template file for 'hydrus'
+pkgname=hydrus
+version=424
+revision=1
+hostmakedepends="python3"
+depends="python3-BeautifulSoup4 python3-chardet python3-html5lib python3-lxml
+	python3-nose python3-numpy libopencv-python3 python3-six python3-Pillow
+	python3-psutil python3-openssl python3-yaml python3-requests
+	python3-send2trash python3-service_identity python3-Twisted python3-QtPy
+	python3-PyQt5 ffmpeg"
+# optdeps on python3-socks, python3-lz4, miniupnpc, python3-cloudscraper,
+#	mpv(libmpv specifically), python3-lzma(not in repo),
+#	python3-PyQtChart(not in repo)
+# test depends on mock(which one?), python3-httmock, pyinstaller(?)
+# list of depends found here: https://github.com/hydrusnetwork/hydrus/blob/master/help/running_from_source.html
+short_desc="Image tagging and searching system for the desktop"
+maintainer="RunningDroid <runningdroid@zoho.com>"
+license="WTFPL"
+homepage="https://hydrusnetwork.github.io/hydrus/"
+distfiles="https://github.com/hydrusnetwork/hydrus/archive/v${version}.tar.gz"
+checksum=36a5f0c00a9499c589f1c53e74ecc6f832722887d19e72d0126d5902c461bf81
+
+do_build() {
+	# correct LICENSE_PATH
+	vsed -i hydrus/core/HydrusConstants.py -e 's/^LICENSE_PATH.*/LICENSE_PATH = "\/usr\/share\/licenses\/hydrus\/LICENSE.WTFPL"/'
+
+	# correct DEFAULT_DB_DIR
+	vsed -i hydrus/core/HydrusConstants.py -e 's/^DEFAULT_DB_DIR.*/DEFAULT_DB_DIR = os.path.join( os.getenv("XDG_DATA_HOME", os.path.expanduser("~\/.local\/share")), "hydrus")/'
+
+	# Remove unit tests (because I don't know how to run them)
+	rm -f "hydrus/Test"*.py
+	rm -rf "static/testing"
+
+	python3 -OO -m compileall -fq .
+
+	# many of the files (including html and svg) have trailing whitespace, this
+	#	doesn't alter the html or svg files because I don't know if it's safe
+	find -iname '*.py*' -execdir sed -i -e 's/ *$//' '{}' \;
+}
+
+do_install() {
+	# Create /opt/hydrus and copy hydrus files to there
+	vmkdir "/opt/hydrus" 755
+	vcopy help "/opt/hydrus/"
+	vcopy hydrus "/opt/hydrus/"
+	vcopy static "/opt/hydrus/"
+	vcopy client.pyw "/opt/hydrus/"
+	vcopy server.py "/opt/hydrus/"
+
+	# Create and populate /opt/hydrus/bin
+	vmkdir "/opt/hydrus/bin" 755
+	ln -s /usr/bin/upnpc "${DESTDIR}/opt/hydrus/bin/upnpc_linux"
+	ln -s /usr/bin/ffmpeg "${DESTDIR}/opt/hydrus/bin/ffmpeg"
+
+	vbin "${FILESDIR}/hydrus-client"
+	vbin "${FILESDIR}/hydrus-server"
+	vinstall "${FILESDIR}/hydrus.desktop" 644 "/usr/share/applications"
+	vlicense license.txt LICENSE.WTFPL
+}
