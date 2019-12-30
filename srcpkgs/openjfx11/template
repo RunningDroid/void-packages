@@ -1,0 +1,29 @@
+# Template file for 'openjfx11'
+pkgname=openjfx11
+version=11+26
+revision=1
+wrksrc=jfx-${version%+*}-${version#*+}
+#create_wrksrc=yes
+#archs="i686 x86_64"
+#conf_files=""
+#make_dirs="/var/log/dir 0755 root root"
+hostmakedepends="openjdk11 unzip apache-ant pkg-config"
+makedepends="ffmpeg-devel glu-devel libX11-devel gtk+-devel gtk+3-devel pango-devel freetype-devel"
+depends="openjdk11"
+short_desc="Next generation client application platform based on JavaSE"
+maintainer="RunningDroid <runningdroid@zoho.com>"
+license="GPL-2.0-only WITH Classpath-exception-2.0"
+homepage="https://openjdk.java.net/projects/openjfx/"
+distfiles="https://github.com/openjdk/jfx/archive/${version}.tar.gz
+		   https://services.gradle.org/distributions/gradle-4.8.1-bin.zip"
+checksum="aa2c33ddb397c3a5dca2c27220eca2d98a5b78198f19046c1c1d20b63f4f55cc
+		  af334d994b5e69e439ab55b5d2b7d086da5ea6763d78054f49f147b06370ed71"
+
+do_build() {
+	. /etc/profile.d/10_openjdk11.sh
+	../gradle-4.8.1/bin/gradle --no-daemon zips # --project-prop=COMPILE_WEBKIT=false
+}
+
+do_install() {
+	false
+}

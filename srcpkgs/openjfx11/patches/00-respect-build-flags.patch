@@ -1,0 +1,202 @@
+Mostly based on a patch from Georgy Yakovlev <gyakovlev@gentoo.org>
+
+diff --unified --recursive buildSrc/linux.gradle buildSrc/linux.gradle
+--- buildSrc/linux.gradle	2018-08-28 22:00:45.000000000 -0400
++++ buildSrc/linux.gradle	2019-12-31 01:42:53.197373346 -0500
+@@ -43,7 +43,9 @@
+ // A set of common parameters to use for both compiling and linking
+ def commonFlags = [
+         "-fno-strict-aliasing", "-fPIC", "-fno-omit-frame-pointer", // optimization flags
+-        "-Wextra", "-Wall", "-Wformat-security", "-Wno-unused", "-Wno-parentheses", "-Werror=implicit-function-declaration"] // warning flags
++        "-Wextra", "-Wall", "-Wformat-security", "-Wno-unused", "-Wno-parentheses", "-Werror=implicit-function-declaration", "-Wno-error=cast-function-type"] // warning flags
++
++commonFlags.addAll(System.getenv("CFLAGS").trim().split(" "))
+ 
+ if (!IS_64) {
+     commonFlags += "-m32"
+@@ -59,6 +61,8 @@
+ def linkFlags = ["-static-libgcc", "-static-libstdc++", "-shared", commonFlags,
+                  "-Wl,--gc-sections"].flatten()
+ 
++linkFlags.addAll(System.getenv("LDFLAGS").trim().split(" "))
++
+ if (IS_DEBUG_NATIVE) {
+     linkFlags += "-g"
+ }
+@@ -285,7 +289,7 @@
+ LINUX.iio.compiler = compiler
+ LINUX.iio.ccFlags = [ccFlags].flatten()
+ LINUX.iio.linker = linker
+-LINUX.iio.linkFlags = [linkFlags].flatten()
++LINUX.iio.linkFlags = [linkFlags, "-ljpeg"].flatten()
+ LINUX.iio.lib = "javafx_iio"
+ 
+ LINUX.prismES2 = [:]
+diff --unified --recursive modules/javafx.media/src/main/native/gstreamer/projects/linux/avplugin/Makefile modules/javafx.media/src/main/native/gstreamer/projects/linux/avplugin/Makefile
+--- modules/javafx.media/src/main/native/gstreamer/projects/linux/avplugin/Makefile	2018-08-28 22:00:45.000000000 -0400
++++ modules/javafx.media/src/main/native/gstreamer/projects/linux/avplugin/Makefile	2019-12-31 01:46:01.311477814 -0500
+@@ -17,7 +17,7 @@
+ OBJBASE_DIR = $(BUILD_DIR)/obj/plugins/avplugin
+ endif
+ 
+-CFLAGS = -fPIC                   \
++CFLAGS := -fPIC                  \
+          -Wformat                \
+          -Wextra                 \
+          -Wformat-security       \
+@@ -28,13 +28,8 @@
+          -DLINUX                 \
+          -DGST_DISABLE_LOADSAVE  \
+          -DGSTREAMER_LITE \
+-         -ffunction-sections -fdata-sections
+-
+-ifeq ($(BUILD_TYPE), Release)
+-    CFLAGS += -Os
+-else
+-    CFLAGS += -g -Wall
+-endif
++         -ffunction-sections -fdata-sections \
++         ${CFLAGS}
+ 
+ PACKAGES_INCLUDES := $(shell pkg-config --cflags glib-2.0)
+ PACKAGES_LIBS     := $(shell pkg-config --libs glib-2.0 gobject-2.0)
+@@ -45,10 +40,11 @@
+           -I../../../gstreamer-lite/gstreamer/libs    \
+           $(PACKAGES_INCLUDES)
+ 
+-LDFLAGS = -L$(BUILD_DIR)    \
++LDFLAGS := -L$(BUILD_DIR)   \
+           -lgstreamer-lite  \
+            $(PACKAGES_LIBS) \
+-          -static-libgcc -static-libstdc++ -Wl,--gc-sections
++          -static-libgcc -static-libstdc++ -Wl,--gc-sections \
++		  ${LDFLAGS}
+ 
+ ifneq ($(strip $(LIBAV_DIR)),)
+ INCLUDES += -I$(LIBAV_DIR)/include
+diff --unified --recursive modules/javafx.media/src/main/native/gstreamer/projects/linux/fxplugins/Makefile modules/javafx.media/src/main/native/gstreamer/projects/linux/fxplugins/Makefile
+--- modules/javafx.media/src/main/native/gstreamer/projects/linux/fxplugins/Makefile	2018-08-28 22:00:45.000000000 -0400
++++ modules/javafx.media/src/main/native/gstreamer/projects/linux/fxplugins/Makefile	2019-12-31 01:47:43.595296324 -0500
+@@ -14,7 +14,7 @@
+ 
+ TARGET = $(BUILD_DIR)/lib$(BASE_NAME).so
+ 
+-CFLAGS = -fPIC                   \
++CFLAGS := -fPIC                   \
+          -Wformat                \
+          -Wextra                 \
+          -Wformat-security       \
+@@ -29,14 +29,8 @@
+          -DGST_DISABLE_LOADSAVE  \
+          -DGST_DISABLE_GST_DEBUG \
+          -DGSTREAMER_LITE \
+-         -ffunction-sections -fdata-sections
+-
+-ifeq ($(BUILD_TYPE), Release)
+-    CFLAGS += -Os
+-else
+-    CFLAGS += -g -Wall
+-endif
+-
++         -ffunction-sections -fdata-sections \
++         ${CFLAGS}
+ 
+ INCLUDES = -I$(SRCBASE_DIR) \
+ 	   $(addprefix -I$(SRCBASE_DIR)/,$(DIRLIST)) \
+@@ -46,8 +40,9 @@
+ PACKAGES_INCLUDES := $(shell pkg-config --cflags glib-2.0)
+ PACKAGES_LIBS := $(shell pkg-config --libs glib-2.0 gobject-2.0)
+ 
+-LDFLAGS = -L$(BUILD_DIR) -lgstreamer-lite $(PACKAGES_LIBS) \
+-          -static-libgcc -static-libstdc++ -Wl,--gc-sections
++LDFLAGS := -L$(BUILD_DIR) -lgstreamer-lite $(PACKAGES_LIBS) \
++          -static-libgcc -static-libstdc++ -Wl,--gc-sections \
++		  ${LDFLAGS}
+ 
+ ifeq ($(ARCH), x32)
+     CFLAGS += -m32
+diff --unified --recursive modules/javafx.media/src/main/native/gstreamer/projects/linux/gstreamer-lite/Makefile modules/javafx.media/src/main/native/gstreamer/projects/linux/gstreamer-lite/Makefile
+--- modules/javafx.media/src/main/native/gstreamer/projects/linux/gstreamer-lite/Makefile	2018-08-28 22:00:45.000000000 -0400
++++ modules/javafx.media/src/main/native/gstreamer/projects/linux/gstreamer-lite/Makefile	2019-12-31 01:48:59.310545070 -0500
+@@ -37,7 +37,7 @@
+ 
+ TARGET = $(BUILD_DIR)/lib$(BASE_NAME).so
+ 
+-CFLAGS =-fPIC                   \
++CFLAGS :=-fPIC                   \
+         -Wformat                \
+         -Wextra                 \
+         -Wformat-security       \
+@@ -50,13 +50,8 @@
+         -DLINUX                 \
+         -DGST_DISABLE_GST_DEBUG \
+         -DGST_DISABLE_LOADSAVE  \
+-        -ffunction-sections -fdata-sections
+-
+-ifeq ($(BUILD_TYPE), Release)
+-    CFLAGS += -Os
+-else
+-    CFLAGS += -g -Wall
+-endif
++        -ffunction-sections -fdata-sections \
++        ${CFLAGS}
+ 
+ INCLUDES = -I$(BASE_DIR)/plugins                          \
+ 	   -I$(SRCBASE_DIR)/projects/build/linux/common   \
+@@ -74,8 +69,9 @@
+ PACKAGES_INCLUDES := $(shell pkg-config --cflags alsa glib-2.0)
+ PACKAGES_LIBS := $(shell pkg-config --libs alsa glib-2.0 gobject-2.0 gmodule-2.0 gthread-2.0)
+ 
+-LDFLAGS = -L$(BUILD_DIR) -lm $(PACKAGES_LIBS) \
+-          -static-libgcc -static-libstdc++ -Wl,--gc-sections
++LDFLAGS := -L$(BUILD_DIR) -lm $(PACKAGES_LIBS) \
++          -static-libgcc -static-libstdc++ -Wl,--gc-sections \
++		  ${LDFLAGS}
+ 
+ ifeq ($(ARCH), x32)
+     CFLAGS += -m32
+diff --unified --recursive modules/javafx.media/src/main/native/jfxmedia/projects/linux/Makefile modules/javafx.media/src/main/native/jfxmedia/projects/linux/Makefile
+--- modules/javafx.media/src/main/native/jfxmedia/projects/linux/Makefile	2018-08-28 22:00:45.000000000 -0400
++++ modules/javafx.media/src/main/native/jfxmedia/projects/linux/Makefile	2019-12-31 01:52:05.023310583 -0500
+@@ -17,7 +17,7 @@
+ 
+ TARGET = $(BUILD_DIR)/lib$(BASE_NAME).so
+ 
+-CFLAGS = -DTARGET_OS_LINUX=1     \
++CFLAGS := -DTARGET_OS_LINUX=1     \
+          -D_GNU_SOURCE           \
+          -DGST_REMOVE_DEPRECATED \
+          -DGST_DISABLE_GST_DEBUG \
+@@ -26,7 +26,8 @@
+          -DHAVE_CONFIG_H         \
+          -DJFXMEDIA_JNI_EXPORTS  \
+          -DLINUX                 \
+-         -ffunction-sections -fdata-sections
++         -ffunction-sections -fdata-sections \
++         ${CFLAGS}
+ 
+ CPPFLAGS = -fno-rtti -ffunction-sections -fdata-sections
+ 
+@@ -55,18 +56,13 @@
+ 	           -I$(GSTREAMER_LITE_DIR)/gstreamer/libs \
+ 		  $(PACKAGES_INCLUDES)
+ 
+-	LDFLAGS = -Wl,-rpath,\$$ORIGIN -L$(BUILD_DIR) -lgstreamer-lite $(PACKAGES_LIBS) \
+-            -static-libgcc -static-libstdc++ -Wl,--gc-sections
++	LDFLAGS := -Wl,-rpath,\$$ORIGIN -L$(BUILD_DIR) -lgstreamer-lite $(PACKAGES_LIBS) \
++            -static-libgcc -static-libstdc++ -Wl,--gc-sections \
++			${LDFLAGS}
+ else
+ 	CFLAGS += $(EXTRA_CFLAGS)
+ 	INCLUDES = $(BASE_INCLUDES)
+-	LDFLAGS = -Wl,-rpath,\$$ORIGIN -L$(BUILD_DIR) $(EXTRA_LDFLAGS)
+-endif
+-
+-ifeq ($(BUILD_TYPE), Release)
+-	CFLAGS += -Os
+-else
+-	CFLAGS += -g -Wall -D_DEBUG
++	LDFLAGS := -Wl,-rpath,\$$ORIGIN -L$(BUILD_DIR) $(EXTRA_LDFLAGS) ${LDFLAGS}
+ endif
+ 
+ ifeq ($(ARCH), x32)
