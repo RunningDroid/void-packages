@@ -1,16 +1,18 @@
 # Template file for 'megatools'
 pkgname=megatools
-version=1.10.3
-revision=3
-build_style=gnu-configure
+_date=20210505
+version=1.11.0
+revision=1
+build_style=meson
 hostmakedepends="pkg-config asciidoc"
 makedepends="glib-networking gobject-introspection openssl-devel libcurl-devel fuse-devel libsodium-devel glib-devel"
 short_desc="Command line client for Mega.nz file sharing service"
 maintainer="RunningDroid <runningdroid@zoho.com>"
+wrksrc="megatools-${version}-git-${_date}"
 license="GPL-2.0-or-later"
 homepage="https://megatools.megous.com/"
-distfiles="${homepage}/builds/megatools-${version}.tar.gz"
-checksum=8dc1ca348633fd49de7eb832b323e8dc295f1c55aefb484d30e6475218558bdb
+distfiles="${homepage}/builds/experimental/megatools-${version}-git-${_date}.tar.gz"
+checksum=d06f3c1ff5800e762f2055d06fba8440d9323640154a04b0d80c95f96625ba8f
 
 post_install() {
 	vinstall contrib/bash-completion/megatools 644 usr/share/bash-completion/completions
