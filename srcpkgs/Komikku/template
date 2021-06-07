@@ -1,6 +1,6 @@
 # Template file for 'Komikku'
 pkgname=Komikku
-version=0.27.0
+version=0.29.1
 revision=1
 wrksrc=Komikku-v${version}
 build_style=meson
@@ -15,4 +15,4 @@ maintainer="Lorem <notloremipsum@protonmail.com>"
 license="GPL-3.0-or-later"
 homepage="https://gitlab.com/valos/Komikku"
 distfiles="${homepage}/-/archive/v${version}/Komikku-v${version}.tar.gz"
-checksum=d4ecd12d7fc3a6a3e5fde3ed03608ff48045c2e7425b66ef0fadf04941643da2
+checksum=a811d31dde0e6bd7d3cfb8167edd2fbc9d3237ca69d1e9e21345c52706b9620a
