@@ -1,0 +1,15 @@
+# Template file for 'python3-gatt'
+pkgname=python3-gatt
+version=0.2.6
+revision=1
+wrksrc="gatt-python-${version}"
+build_style=python3-module
+make_check=no # there aren't any tests
+makedepends="python3-setuptools"
+depends="bluez python3-dbus python3-gobject"
+short_desc="Bluetooth GATT SDK for Python"
+maintainer="RunningDroid <runningdroid@zoho.com>"
+license="GPL-3.0-or-later"
+homepage="https://github.com/getsenic/gatt-python"
+distfiles="https://github.com/getsenic/gatt-python/archive/refs/tags/${version}.tar.gz"
+checksum=3fbb68427715881d5f26956b6c3544d35dafe7ae9bda419390fd7924f2317a62
