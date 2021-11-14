@@ -1,0 +1,12 @@
+diff --color --recursive -u garglk-d1779493cfe0ab7c243d2e694aafc4937ddd7494.orig/terps/tads/tads3/sha2.cpp garglk-d1779493cfe0ab7c243d2e694aafc4937ddd7494/terps/tads/tads3/sha2.cpp
+--- garglk-d1779493cfe0ab7c243d2e694aafc4937ddd7494.orig/terps/tads/tads3/sha2.cpp	2021-11-14 21:01:56.925227503 -0500
++++ garglk-d1779493cfe0ab7c243d2e694aafc4937ddd7494/terps/tads/tads3/sha2.cpp	2021-11-14 21:03:17.200654307 -0500
+@@ -91,7 +91,7 @@
+ 
+ /*  1. PLATFORM SPECIFIC INCLUDES */
+ 
+-#if defined(__GNU_LIBRARY__)
++#if defined(__linux__)
+ #  include <byteswap.h>
+ #  include <endian.h>
+ #elif defined(__CRYPTLIB__)

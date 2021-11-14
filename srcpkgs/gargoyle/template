@@ -1,0 +1,22 @@
+# Template file for 'gargoyle'
+pkgname=gargoyle
+version=2022.1
+revision=1
+#archs="i686 x86_64"
+wrksrc="garglk-${version}"
+build_style=cmake
+configure_args="-DWITH_TTS=false -DCMAKE_BUILD_TYPE=release"
+hostmakedepends="libvorbis-devel freetype-devel SDL2-devel SDL2_mixer-devel gtk+3-devel qt5-qmake qt5-host-tools"
+makedepends="qt5-devel pkg-config libjpeg-turbo-devel"
+short_desc="Interactive Fiction interpreter that supports all major IF formats"
+maintainer="RunningDroid <runningdroid@zoho.com>"
+license="GPL-2.0-or-later"
+homepage="https://github.com/garglk/garglk"
+distfiles="https://github.com/garglk/garglk/archive/refs/tags/${version}.zip"
+checksum=c3ded7abe94b1aeea8de7aef25ae896f610d9df23a4cbe9a087043ead2dded51
+make_check=no # no tests
+
+post_install() {
+	# Install default config
+	vconf garglk/garglk.ini
+}
