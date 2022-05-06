@@ -1,0 +1,28 @@
+# Template file for 'mozillavpn'
+pkgname=mozillavpn
+version=2.9.0
+revision=1
+#archs="i686 x86_64"
+wrksrc="mozilla-vpn-client-${version}"
+#create_wrksrc=yes
+build_style=cmake
+#configure_args=""
+#make_build_args=""
+#make_install_args=""
+#conf_files=""
+#make_dirs="/var/log/dir 0755 root root"
+hostmakedepends="python3-setuptools rust go pkg-config"
+makedepends="python3-devel python3-Flask python3-glean_parser python3-lxml python3-yaml python3-jsonschema polkit-devel qt6-base-devel qt6-websockets-devel qt6-declarative-devel qt6-networkauth-devel wireguard-tools"
+depends="wireguard openresolv"
+short_desc="Fast, secure and easy to use VPN"
+maintainer="RunningDroid <runningdroid@zoho.com>"
+license="GPL-3.0-or-later"
+homepage="https://vpn.mozilla.org/"
+#changelog=""
+distfiles="https://github.com/mozilla-mobile/mozilla-vpn-client/archive/refs/tags/v${version}.tar.gz"
+checksum=001046603749ec25cb66713c6cfbe651dd99859eab91869f64e6fc6c7ed53856
+
+pre_configure() {
+	mkdir 3rdparty/wireguard-tools/contrib
+	cp -r /usr/share/wireguard-tools/examples/embeddable-wg-library/ 3rdparty/wireguard-tools/contrib
+}

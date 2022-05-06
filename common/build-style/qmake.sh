@@ -4,6 +4,10 @@
 do_configure() {
 	local qmake
 	local qmake_args
+	if [ -x "/usr/lib/qt6/bin/qmake" ]; then
+		# Qt6 qmake
+		qmake="/usr/lib/qt6/bin/qmake"
+	fi
 	if [ -x "/usr/lib/qt5/bin/qmake" ]; then
 		# Qt5 qmake
 		qmake="/usr/lib/qt5/bin/qmake"
