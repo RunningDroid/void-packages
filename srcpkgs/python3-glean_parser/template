@@ -1,0 +1,19 @@
+# Template file for 'python3-glean_parser'
+pkgname=python3-glean_parser
+version=6.1.1
+revision=1
+wrksrc="glean_parser-${version}"
+build_style=python3-module
+make_check_args="--ignore=tests/test_lint.py"
+hostmakedepends="python3-setuptools python3-pip"
+depends="python3-appdirs python3-diskcache python3-yamllint python3-click
+	python3-Jinja2 python3-jsonschema python3-yaml python3-MarkupSafe
+	python3-pytest python3-py python3-pluggy python3-iniconfig"
+checkdepends="$depends"
+short_desc="Tools for parsing the metadata for Mozilla's glean telemetry SDK"
+maintainer="RunningDroid <runningdroid@zoho.com>"
+license="MPL-2.0"
+homepage="https://mozilla.github.io/glean_parser/"
+changelog="https://raw.githubusercontent.com/mozilla/glean_parser/main/CHANGELOG.md"
+distfiles="${PYPI_SITE}/g/glean_parser/glean_parser-${version}.tar.gz"
+checksum=bc41a57aa432b4d632cbf0df1f0ab1ac720e3028f8b194dabdfbb1c837393b7d
