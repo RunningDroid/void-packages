@@ -1,0 +1,14 @@
+# Template file for 'python3-diskcache'
+pkgname=python3-diskcache
+version=5.4.0
+revision=1
+wrksrc="${pkgname#python3-}-${version}"
+build_style=python3-module
+hostmakedepends="python3-setuptools"
+short_desc="Python disk and file backed cache library"
+maintainer="RunningDroid <runningdroid@zoho.com>"
+license="Apache-2.0"
+homepage="https://pypi.org/project/diskcache/"
+distfiles="${PYPI_SITE}/d/diskcache/diskcache-${version}.tar.gz"
+checksum=8879eb8c9b4a2509a5e633d2008634fb2b0b35c2b36192d89655dbde02419644
+make_check=no # there's no tox config so it errors out
