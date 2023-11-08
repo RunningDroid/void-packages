@@ -1,18 +1,27 @@
 # Template file for 'icedtea-web'
 pkgname=icedtea-web
-version=1.6.2
-revision=3
+version=1.8.8
+revision=1
 build_style=gnu-configure
-configure_args="--with-jdk-home=/usr/lib/jvm/openjdk8 $(vopt_enable plugin)"
-hostmakedepends="zip openjdk8 pkg-config"
+configure_args="--with-jdk-home=/usr/lib/jvm/openjdk8 --with-itw-libs=DISTRIBUTION $(vopt_enable plugin native-plugin)"
+hostmakedepends="zip openjdk8 pkg-config automake cargo"
 makedepends="glib-devel libX11-devel"
 depends="openjdk8"
 short_desc="Implementation of Java Web Start"
 maintainer="Felix Hanley <felix@userspace.com.au>"
 license="GPL-2.0-or-later"
-homepage="http://icedtea.classpath.org/wiki/IcedTea-Web"
-distfiles="http://icedtea.classpath.org/download/source/${pkgname}-${version}.tar.gz"
-checksum=ce67034096d6b960e2b6cfb5c41a7bd6b30eb2ec7f13bf3ecdb477ff6ce69300
+homepage="https://github.com/AdoptOpenJDK/IcedTea-Web"
+distfiles="https://github.com/AdoptOpenJDK/IcedTea-Web/archive/refs/tags/icedtea-web-${version}.tar.gz"
+checksum=f4203a605a3c9c50acdcc6eef4a366b9fdd36d95edcd76bcbfede01107cb5fe6
 
 build_options="plugin"
 desc_option_plugin="Build browser plugin"
+
+pre_configure() {
+	autoreconf -fi
+}
+
+post_install() {
+	vmkdir usr/share/bash-completion/completions
+	mv -t "${DESTDIR}/usr/share/bash-completion/completions" "${DESTDIR}"/etc/bash_completion.d/*
+}
