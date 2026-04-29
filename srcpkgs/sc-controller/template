@@ -1,15 +1,15 @@
 # Template file for 'sc-controller'
 pkgname=sc-controller
-version=0.4.8.10
-revision=4
+version=0.5.5
+revision=1
 build_style=python3-module
 hostmakedepends="python3-setuptools"
 makedepends="python3-devel zlib-devel"
-depends="gtk+3 python3-gobject python3-cairo python3-evdev python3-vdf"
+depends="gtk+3 gtk-layer-shell libayatana-appindicator python3-gobject python3-cairo python3-evdev python3-vdf python3-libusb1"
 checkdepends="python3-pytest libusb-devel libXfixes libXext-devel python3-vdf"
 short_desc="User-mode driver and GTK3 based GUI for Steam Controller"
 maintainer="Henry Naguski <henry@nilsu.org>"
 license="GPL-2.0-only"
-homepage="https://github.com/Ryochan7/sc-controller"
-distfiles="https://github.com/Ryochan7/sc-controller/archive/refs/tags/v$version.tar.gz"
-checksum=1f55e89a441e911d98d534a5f29deb5f133cdfa4593fd85238356cf6cc781312
+homepage="https://github.com/C0rn3j/sc-controller"
+distfiles="https://github.com/C0rn3j/sc-controller/archive/refs/tags/v$version.tar.gz"
+checksum=b6dbbec8d03190a94015ad44d0a3d1b922cd3f273ca19485f25ec91fcb64425f
